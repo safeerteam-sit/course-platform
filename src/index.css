@@ -19,16 +19,19 @@
   --color-brand-dark: #5b21b6;
   --color-brand-tint: #f3e8ff;
 
-  /* اللون الثانوي: برتقالي ناري مشرق (Neon Sunset Orange) */
-  --color-gold: #ff6b00;
+  /* اللون الثانوي: برتقالي داكن وناري مشرق (Deep Sunset Orange) */
+  --color-gold: #ea580c;
   --color-gold-tint: #fff4ed;
-  --color-gold-ink: #c2410c;
+  --color-gold-ink: #9a3412;
+  --color-orange-deep: #ea580c;
+  --color-orange-neon: #ff6b00;
 
   --color-line: #e9e4dc;
 
   --shadow-soft: 0 10px 40px -14px rgb(43 38 34 / 0.15);
-  --shadow-lift: 0 28px 64px -20px rgb(124 58 237 / 0.35);
-  --shadow-glow: 0 14px 44px -10px rgb(255 107 0 / 0.3);
+  --shadow-lift: 0 24px 60px -16px rgb(124 58 237 / 0.35);
+  --shadow-glow: 0 16px 48px -10px rgb(234 88 12 / 0.45);
+  --shadow-duotone: 0 20px 50px -15px rgb(124 58 237 / 0.25), 0 10px 30px -10px rgb(234 88 12 / 0.35);
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-float-slow: float 8s ease-in-out 1.2s infinite;
@@ -95,9 +98,32 @@ body {
 }
 
 .glass-card {
-  background: rgb(246 241 233 / 0.82);
+  background: rgb(246 241 233 / 0.85);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* بطاقات تفاعلية متقدمة مع إضاءة حيوية عند التمرير */
+.card-interactive {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-interactive:hover {
+  transform: translateY(-6px) scale(1.008);
+  box-shadow: 0 24px 50px -12px rgba(124, 58, 237, 0.22), 0 12px 30px -8px rgba(234, 88, 12, 0.35);
+  border-color: rgba(234, 88, 12, 0.45);
+}
+
+/* تدرج لوني للنصوص يدمج البنفسجي والبرتقالي الداكن */
+.gradient-text-safeer {
+  background: linear-gradient(135deg, #7c3aed 0%, #ff6b00 55%, #ea580c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* توهج برتقالي داكن */
+.glow-orange {
+  box-shadow: 0 10px 30px -6px rgba(234, 88, 12, 0.45);
 }
 
 .no-scrollbar {

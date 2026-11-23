@@ -18,14 +18,14 @@ export function StatsBar() {
   return (
     <section className="mx-auto max-w-7xl px-4 md:px-8">
       <div
-        className={`grid gap-6 rounded-[2rem] border border-line bg-cream-2/70 p-8 shadow-soft ${items.length > 2 ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2"}`}
+        className={`grid gap-6 rounded-[2rem] border border-orange-500/20 bg-cream-2/80 backdrop-blur-md p-8 shadow-[0_16px_40px_-12px_rgba(234,88,12,0.18)] ${items.length > 2 ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2"}`}
       >
         {items.map((item) => (
           <div key={item.label} className="text-center">
-            <div className="font-display text-4xl font-black text-brand md:text-5xl">
+            <div className="font-display text-4xl font-black text-transparent bg-clip-text bg-linear-to-r from-[#7C3AED] via-[#9333EA] to-[#EA580C] md:text-5xl">
               <CountUp to={item.value} decimals={item.decimals} suffix={item.suffix} />
             </div>
-            <div className="mt-2 text-sm text-ink-soft">{item.label}</div>
+            <div className="mt-2 text-sm font-semibold text-ink-soft">{item.label}</div>
           </div>
         ))}
       </div>

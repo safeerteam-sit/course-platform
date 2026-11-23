@@ -90,11 +90,11 @@ export function Home() {
               const Icon = item.icon;
               return (
                 <Reveal key={item.title} delay={index * 90} className="h-full">
-                  <div className="h-full rounded-3xl border border-line bg-cream p-7 shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:shadow-lift">
-                    <span className="grid size-14 place-items-center rounded-2xl bg-brand-tint text-brand">
-                      <Icon className="size-7" strokeWidth={1.7} />
+                  <div className="group card-interactive h-full rounded-3xl border border-line bg-cream/90 backdrop-blur-sm p-7 shadow-soft transition-all duration-500 hover:-translate-y-2 hover:border-orange-500/40 hover:shadow-[0_20px_45px_-10px_rgba(234,88,12,0.25)]">
+                    <span className="grid size-14 place-items-center rounded-2xl bg-linear-to-br from-[#7C3AED] to-[#EA580C] text-white shadow-md group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                      <Icon className="size-7" strokeWidth={1.8} />
                     </span>
-                    <h3 className="mt-5 font-display text-lg font-bold">{item.title}</h3>
+                    <h3 className="mt-5 font-display text-lg font-bold group-hover:text-[#EA580C] transition-colors">{item.title}</h3>
                     <p className="mt-2 text-sm leading-7 text-ink-soft">{item.text}</p>
                   </div>
                 </Reveal>
@@ -115,14 +115,14 @@ export function Home() {
             const Icon = step.icon;
             return (
               <Reveal key={step.title} delay={index * 110}>
-                <li className="relative text-center">
-                  <span className="relative mx-auto grid size-16 place-items-center rounded-full border border-line bg-cream text-brand shadow-soft">
-                    <Icon className="size-7" strokeWidth={1.6} />
-                    <span className="absolute -top-1 -end-1 grid size-6 place-items-center rounded-full bg-gold text-xs font-bold text-ink">
+                <li className="group relative text-center">
+                  <span className="relative mx-auto grid size-16 place-items-center rounded-full border-2 border-orange-500/30 bg-cream text-brand shadow-soft transition-transform duration-300 group-hover:scale-110">
+                    <Icon className="size-7 text-[#EA580C]" strokeWidth={1.8} />
+                    <span className="absolute -top-1 -end-1 grid size-6 place-items-center rounded-full bg-linear-to-r from-[#FF6B00] to-[#EA580C] text-xs font-black text-white shadow-sm">
                       {index + 1}
                     </span>
                   </span>
-                  <h3 className="mt-5 font-display text-lg font-bold">{step.title}</h3>
+                  <h3 className="mt-5 font-display text-lg font-bold group-hover:text-[#EA580C] transition-colors">{step.title}</h3>
                   <p className="mx-auto mt-2 max-w-[16rem] text-sm leading-7 text-ink-soft">{step.text}</p>
                 </li>
               </Reveal>

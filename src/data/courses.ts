@@ -54,7 +54,7 @@ export const courses: Course[] = [
         lessons: ["بناء سير عمل متكامل", "تسعير خدماتك وعرضها", "نشر المحتوى وبناء حضورك"],
       },
     ],
-    theme: { from: "#1f5c4d", to: "#3f917a", icon: "sparkles" },
+    theme: { from: "#6b21a8", to: "#ea580c", icon: "sparkles" },
   },
   {
     id: "meta-marketing",
@@ -95,7 +95,7 @@ export const courses: Course[] = [
         lessons: ["البكسل والأحداث", "قراءة التقارير", "تحسين الميزانية وتوسيع الحملات"],
       },
     ],
-    theme: { from: "#2f4a7a", to: "#5578b8", icon: "megaphone" },
+    theme: { from: "#4338ca", to: "#c2410c", icon: "megaphone" },
   },
   {
     id: "snap-tiktok",
@@ -135,7 +135,7 @@ export const courses: Course[] = [
         lessons: ["كتابة سيناريو الفيديو الإعلاني", "قراءة الأرقام", "التحسين المستمر"],
       },
     ],
-    theme: { from: "#8a5a2b", to: "#c9a15b", icon: "video" },
+    theme: { from: "#7c2d12", to: "#f97316", icon: "video" },
   },
   {
     id: "google-marketing",
@@ -175,7 +175,7 @@ export const courses: Course[] = [
         lessons: ["إنشاء وتوثيق صفحة النشاط", "تحسين الظهور المحلي", "إدارة التقييمات"],
       },
     ],
-    theme: { from: "#a0432f", to: "#d97757", icon: "search" },
+    theme: { from: "#581c87", to: "#ea580c", icon: "search" },
   },
   {
     id: "ai-business",
@@ -215,7 +215,7 @@ export const courses: Course[] = [
         lessons: ["أتمتة المهام المتكررة", "تدريب الفريق", "خطة تطبيق لنشاطك"],
       },
     ],
-    theme: { from: "#3b3a56", to: "#6f5f9c", icon: "briefcase" },
+    theme: { from: "#312e81", to: "#ea580c", icon: "briefcase" },
   },
 ];
 
