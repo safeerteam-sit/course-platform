@@ -14,20 +14,21 @@
   --color-ink: #2b2622;
   --color-ink-soft: #6b6259;
 
-  /* اللون الأساسي: أخضر زمردي غني */
-  --color-brand: #1f5c4d;
-  --color-brand-dark: #174739;
-  --color-brand-tint: #e3efe9;
+  /* اللون الأساسي: بنفسجي كهربائي حديث (Electric Violet) */
+  --color-brand: #7c3aed;
+  --color-brand-dark: #5b21b6;
+  --color-brand-tint: #f3e8ff;
 
-  /* اللون الثانوي: ذهبي هادئ */
-  --color-gold: #c9a15b;
-  --color-gold-tint: #f3e8d0;
-  --color-gold-ink: #7d5f27;
+  /* اللون الثانوي: برتقالي ناري مشرق (Neon Sunset Orange) */
+  --color-gold: #ff6b00;
+  --color-gold-tint: #fff4ed;
+  --color-gold-ink: #c2410c;
 
-  --color-line: #e2d8c6;
+  --color-line: #e9e4dc;
 
-  --shadow-soft: 0 10px 40px -14px rgb(43 38 34 / 0.2);
-  --shadow-lift: 0 28px 64px -20px rgb(31 92 77 / 0.34);
+  --shadow-soft: 0 10px 40px -14px rgb(43 38 34 / 0.15);
+  --shadow-lift: 0 28px 64px -20px rgb(124 58 237 / 0.35);
+  --shadow-glow: 0 14px 44px -10px rgb(255 107 0 / 0.3);
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-float-slow: float 8s ease-in-out 1.2s infinite;

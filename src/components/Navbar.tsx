@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ChevronDown, Menu, ShoppingBag, Sparkles, UserRound, X } from "lucide-react";
+import { ChevronDown, Menu, ShoppingBag, UserRound, X } from "lucide-react";
 import { siteConfig } from "../config";
 import { useStore } from "../context/StoreContext";
 import { Link, goToSection, useRoute } from "../lib/router";
+import { SafeerLogo } from "./SafeerLogo";
 
 const navLinkClass =
   "rounded-full px-4 py-2 text-[15px] font-medium text-ink-soft transition-colors hover:bg-cream-2 hover:text-ink";
@@ -21,10 +22,7 @@ export function Navbar() {
     <header className="glass sticky top-0 z-40 border-b border-line/70">
       <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-3 px-4 md:px-8">
         <Link to="/" onClick={closeMenu} className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-brand text-cream shadow-soft">
-            <Sparkles className="size-5" />
-          </span>
-          <span className="font-display text-lg font-extrabold whitespace-nowrap">{siteConfig.name}</span>
+          <SafeerLogo size="md" variant="full" />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="التنقل الرئيسي">

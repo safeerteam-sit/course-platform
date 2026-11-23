@@ -54,11 +54,11 @@ export function Hero() {
             {instructor.photo ? (
               <img src={instructor.photo} alt={instructor.name} className="size-full object-cover" />
             ) : (
-              <div className="relative grid size-full place-items-center bg-linear-to-br from-brand to-[#3f917a]">
+              <div className="relative grid size-full place-items-center bg-linear-to-br from-brand via-[#9333EA] to-gold">
                 <div className="dots absolute inset-0" />
                 <div className="relative text-center text-cream">
                   <UserRound className="mx-auto size-28" strokeWidth={1.2} />
-                  <p className="mt-3 text-sm opacity-80">ضع صورتك هنا</p>
+                  <p className="mt-3 text-sm font-semibold opacity-90">د. أحمد حسين</p>
                 </div>
               </div>
             )}

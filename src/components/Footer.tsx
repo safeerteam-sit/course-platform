@@ -1,6 +1,7 @@
-import { MessageCircle, Sparkles } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { siteConfig } from "../config";
 import { Link, goToSection } from "../lib/router";
+import { SafeerLogo } from "./SafeerLogo";
 
 export function Footer() {
   const socials = [
@@ -14,12 +15,7 @@ export function Footer() {
     <footer className="mt-24 border-t border-line bg-cream-2/60">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-[1.4fr_1fr_1fr] md:px-8">
         <div>
-          <div className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded-2xl bg-brand text-cream">
-              <Sparkles className="size-5" />
-            </span>
-            <span className="font-display text-lg font-extrabold">{siteConfig.name}</span>
-          </div>
+          <SafeerLogo size="lg" variant="full" />
           <p className="mt-4 max-w-sm text-sm leading-7 text-ink-soft">{siteConfig.tagline}</p>
         </div>
 
