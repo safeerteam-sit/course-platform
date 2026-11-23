@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ChevronDown, Menu, ShoppingBag, UserRound, X } from "lucide-react";
+import { ChevronDown, LogOut, Menu, ShieldCheck, ShoppingBag, UserRound, X } from "lucide-react";
 import { siteConfig } from "../config";
+import { useAuth } from "../context/AuthContext";
 import { useStore } from "../context/StoreContext";
 import { Link, goToSection, useRoute } from "../lib/router";
 import { SafeerLogo } from "./SafeerLogo";
@@ -10,8 +11,10 @@ const navLinkClass =
 
 export function Navbar() {
   const { cartIds, setCartOpen, currency, setCurrencyCode } = useStore();
+  const { user, isAdmin, openAuthModal, signOut } = useAuth();
   const path = useRoute();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
 
   const isHome = path === "/";
@@ -62,6 +65,72 @@ export function Navbar() {
             </select>
             <ChevronDown className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
           </label>
+
+          {/* زر تسجيل الدخول / بروفايل المستخدم */}
+          {user ? (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setUserDropdownOpen((o) => !o)}
+                className="flex items-center gap-2 rounded-full border border-orange-500/35 bg-cream-2/90 py-1.5 ps-1.5 pe-3 text-xs font-bold text-ink hover:border-orange-500 hover:shadow-xs transition-all cursor-pointer"
+              >
+                {user.user_metadata?.avatar_url ? (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt={user.user_metadata?.full_name || "المستخدم"}
+                    className="size-7 rounded-full object-cover ring-1 ring-orange-500"
+                  />
+                ) : (
+                  <span className="grid size-7 place-items-center rounded-full bg-linear-to-br from-[#7C3AED] to-[#EA580C] text-white text-[11px] font-black">
+                    {(user.user_metadata?.full_name || user.email || "U").charAt(0).toUpperCase()}
+                  </span>
+                )}
+                <span className="hidden sm:inline max-w-[90px] truncate">
+                  {user.user_metadata?.full_name?.split(" ")[0] || "حسابي"}
+                </span>
+                <ChevronDown className="size-3.5 text-ink-soft" />
+              </button>
+
+              {userDropdownOpen && (
+                <div className="absolute end-0 top-full mt-2 w-52 overflow-hidden rounded-2xl border border-line bg-cream p-1.5 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.15)] z-50 animate-in fade-in zoom-in-95">
+                  <div className="px-3 py-2 border-b border-line/60">
+                    <p className="text-xs font-bold text-ink truncate">{user.user_metadata?.full_name || "مرحباً بك"}</p>
+                    <p className="text-[10px] text-ink-soft truncate">{user.email}</p>
+                  </div>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-purple-700 hover:bg-purple-50 transition-colors"
+                    >
+                      <ShieldCheck className="size-4" />
+                      لوحة تحكم الإدارة
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUserDropdownOpen(false);
+                      signOut();
+                    }}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="size-4" />
+                    تسجيل الخروج
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={openAuthModal}
+              className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/40 bg-gradient-to-r from-orange-500/15 via-purple-500/10 to-orange-500/10 px-3.5 py-2 text-xs font-black text-orange-900 shadow-xs hover:border-orange-500 hover:shadow-sm hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            >
+              <UserRound className="size-3.5 text-[#EA580C]" />
+              <span className="hidden sm:inline">دخول</span>
+            </button>
+          )}
 
           <button
             type="button"

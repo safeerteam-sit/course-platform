@@ -1,9 +1,11 @@
 import { useEffect } from "react";
+import { AuthModal } from "./components/AuthModal";
 import { CartDrawer } from "./components/CartDrawer";
 import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { QuickViewModal } from "./components/QuickViewModal";
 import { btn } from "./components/ui";
+import { AuthProvider } from "./context/AuthContext";
 import { StoreProvider } from "./context/StoreContext";
 import { Link, useRoute } from "./lib/router";
 import { Admin } from "./pages/Admin";
@@ -51,16 +53,19 @@ export default function App() {
   }, [path]);
 
   return (
-    <StoreProvider>
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Routes key={path} path={path} />
-        </main>
-        <Footer />
-        <CartDrawer />
-        <QuickViewModal />
-      </div>
-    </StoreProvider>
+    <AuthProvider>
+      <StoreProvider>
+        <div className="flex min-h-screen flex-col">
+          <Navbar />
+          <main className="flex-1">
+            <Routes key={path} path={path} />
+          </main>
+          <Footer />
+          <CartDrawer />
+          <QuickViewModal />
+          <AuthModal />
+        </div>
+      </StoreProvider>
+    </AuthProvider>
   );
 }
