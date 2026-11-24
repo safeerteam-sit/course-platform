@@ -1,12 +1,15 @@
-import { useState } from "react";
-import { AlertCircle, CheckCircle2, ShieldCheck, X } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { AlertCircle, ArrowLeft, Lock, Mail, ShieldCheck, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { SafeerLogo } from "./SafeerLogo";
 
 export function AuthModal() {
-  const { authModalOpen, closeAuthModal, signInWithGoogle, signInWithFacebook } = useAuth();
-  const [loadingProvider, setLoadingProvider] = useState<"google" | "facebook" | null>(null);
+  const { authModalOpen, closeAuthModal, signInWithGoogle, signInWithFacebook, signInWithPassword } = useAuth();
+  const [loadingProvider, setLoadingProvider] = useState<"google" | "facebook" | "password" | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showEmailForm, setShowEmailForm] = useState(false);
 
   if (!authModalOpen) return null;
 
@@ -40,6 +43,32 @@ export function AuthModal() {
     }
   };
 
+  const handlePasswordSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setErrorMsg("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+      return;
+    }
+    try {
+      setLoadingProvider("password");
+      setErrorMsg(null);
+      const { error } = await signInWithPassword(email, password);
+      if (error) {
+        setErrorMsg("بيانات الدخول غير صحيحة. يرجى التأكد من البريد وكلمة المرور.");
+      } else {
+        closeAuthModal();
+        // If it's the admin, redirect directly to admin page
+        if (email.toLowerCase().includes("safeer.team")) {
+          window.location.hash = "#/admin";
+        }
+      }
+    } catch {
+      setErrorMsg("تعذر تسجيل الدخول. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setLoadingProvider(null);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -49,7 +78,7 @@ export function AuthModal() {
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/60 bg-cream p-7 shadow-[0_25px_60px_-15px_rgba(124,58,237,0.35),0_15px_30px_-10px_rgba(234,88,12,0.3)] animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl border border-white/60 bg-cream p-7 shadow-[0_25px_60px_-15px_rgba(124,58,237,0.35),0_15px_30px_-10px_rgba(234,88,12,0.3)] animate-in fade-in zoom-in-95 duration-200">
         {/* Glow ambient background */}
         <div className="pointer-events-none absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br from-[#7C3AED]/25 to-[#EA580C]/20 blur-2xl" />
 
@@ -68,10 +97,10 @@ export function AuthModal() {
             <SafeerLogo size="lg" variant="mark" />
           </div>
           <h2 className="mt-4 font-display text-2xl font-black text-ink">
-            تسجيل الدخول إلى <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] to-[#EA580C]">أكاديمية سفير</span>
+            تسجيل الدخول إلى <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] to-[#EA580C]">شركة سفير</span>
           </h2>
           <p className="mt-2 text-sm text-ink-soft">
-            سجّل دخولك لمتابعة تدريبك، استلام الوصول للكورسات، ومراجعة طلباتك
+            سجّل دخولك لمتابعة تدريبك أو الوصول للوحة التحكم
           </p>
         </div>
 
@@ -84,7 +113,7 @@ export function AuthModal() {
         )}
 
         {/* OAuth Buttons */}
-        <div className="mt-7 space-y-3.5">
+        <div className="mt-6 space-y-3">
           {/* Google Button */}
           <button
             type="button"
@@ -92,7 +121,6 @@ export function AuthModal() {
             disabled={loadingProvider !== null}
             className="group relative flex w-full items-center justify-center gap-3 rounded-2xl border-2 border-line bg-white px-5 py-3.5 text-sm font-bold text-ink shadow-sm transition-all duration-300 hover:border-purple-400 hover:shadow-[0_8px_25px_-5px_rgba(124,58,237,0.25)] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer disabled:opacity-60"
           >
-            {/* Google G SVG */}
             <svg className="size-5 shrink-0" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
@@ -116,15 +144,14 @@ export function AuthModal() {
             </span>
           </button>
 
-          {/* Facebook Button (Ready / Future-proof) */}
+          {/* Facebook Button */}
           <button
             type="button"
             onClick={handleFacebook}
             disabled={loadingProvider !== null}
-            className="group relative flex w-full items-center justify-center gap-3 rounded-2xl border border-blue-200/60 bg-[#1877F2]/5 px-5 py-3.5 text-sm font-bold text-[#1877F2] shadow-sm transition-all duration-300 hover:bg-[#1877F2]/10 hover:border-[#1877F2] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer disabled:opacity-60"
+            className="group relative flex w-full items-center justify-center gap-3 rounded-2xl border border-blue-200/60 bg-[#1877F2]/5 px-5 py-3 text-sm font-bold text-[#1877F2] shadow-sm transition-all duration-300 hover:bg-[#1877F2]/10 hover:border-[#1877F2] cursor-pointer disabled:opacity-60"
           >
-            {/* Facebook F SVG */}
-            <svg className="size-5 shrink-0 fill-[#1877F2]" viewBox="0 0 24 24">
+            <svg className="size-4 shrink-0 fill-[#1877F2]" viewBox="0 0 24 24">
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
             </svg>
             <span>
@@ -136,29 +163,73 @@ export function AuthModal() {
           </button>
         </div>
 
-        {/* Features bullet list */}
-        <div className="mt-7 rounded-2xl border border-line/60 bg-cream-2/70 p-4">
-          <p className="text-xs font-bold text-ink mb-2">مميزات حسابك على الأكاديمية:</p>
-          <ul className="space-y-1.5 text-xs text-ink-soft">
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="size-3.5 text-[#EA580C]" />
-              <span>الوصول الفوري لمحتوى وفيديوهات الكورسات المشترك بها</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="size-3.5 text-brand" />
-              <span>متابعة حالة طلباتك وتأكيد الدفع أولاً بأول</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="size-3.5 text-[#EA580C]" />
-              <span>تحديثات مستمرة وملفات تدريب حصرية لعام 2026</span>
-            </li>
-          </ul>
+        {/* Divider */}
+        <div className="relative my-5 flex items-center justify-center">
+          <div className="w-full border-t border-line" />
+          <button
+            type="button"
+            onClick={() => setShowEmailForm((v) => !v)}
+            className="absolute bg-cream px-3 text-xs font-bold text-ink-soft hover:text-brand transition-colors cursor-pointer"
+          >
+            {showEmailForm ? "إخفاء الدخول بالبريد" : "أو الدخول بالبريد وكلمة المرور ▼"}
+          </button>
         </div>
 
-        {/* Footer security note */}
-        <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-ink-soft">
+        {/* Email & Password Form */}
+        {showEmailForm && (
+          <form onSubmit={handlePasswordSubmit} className="space-y-3 animate-in fade-in duration-200">
+            <div className="relative">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="البريد الإلكتروني (مثال: safeer.team@gmail.com)"
+                dir="ltr"
+                required
+                className="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-start placeholder:text-ink-soft/60 focus:border-[#7C3AED] focus:outline-none"
+              />
+              <Mail className="pointer-events-none absolute end-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+            </div>
+
+            <div className="relative">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="كلمة المرور"
+                dir="ltr"
+                required
+                className="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm text-start placeholder:text-ink-soft/60 focus:border-[#7C3AED] focus:outline-none"
+              />
+              <Lock className="pointer-events-none absolute end-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loadingProvider !== null}
+              className="w-full rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#EA580C] px-5 py-3 text-sm font-bold text-white shadow-md hover:opacity-95 transition-all cursor-pointer disabled:opacity-60"
+            >
+              {loadingProvider === "password" ? "جاري التحقق والدخول..." : "تسجيل الدخول"}
+            </button>
+          </form>
+        )}
+
+        {/* Direct Admin Link */}
+        <div className="mt-5 text-center border-t border-line/60 pt-4">
+          <a
+            href="#/admin"
+            onClick={closeAuthModal}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#EA580C] hover:underline cursor-pointer"
+          >
+            <span>دخول لوحة تحكم الإدارة (Admin Panel)</span>
+            <ArrowLeft className="size-3.5" />
+          </a>
+        </div>
+
+        {/* Security badge */}
+        <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-ink-soft">
           <ShieldCheck className="size-3.5 text-brand" />
-          <span>بياناتك مشفرة ومحمية بأعلى معايير الأمان</span>
+          <span>بياناتك مشفرة ومحمية بالكامل</span>
         </div>
       </div>
     </div>

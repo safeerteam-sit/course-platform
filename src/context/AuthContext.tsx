@@ -12,6 +12,7 @@ interface AuthContextType {
   closeAuthModal: () => void;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signInWithFacebook: () => Promise<{ error: Error | null }>;
+  signInWithPassword: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -106,6 +107,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error };
   };
 
+  const signInWithPassword = async (email: string, password: string) => {
+    if (!supabase) {
+      return { error: new Error("Supabase is not configured.") };
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { error };
+  };
+
   const signOut = async () => {
     if (supabase) {
       await supabase.auth.signOut();
@@ -127,6 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         closeAuthModal,
         signInWithGoogle,
         signInWithFacebook,
+        signInWithPassword,
         signOut,
       }}
     >
