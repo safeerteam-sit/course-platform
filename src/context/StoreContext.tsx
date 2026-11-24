@@ -1,11 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { siteConfig } from "../config";
+import { siteConfig as defaultSiteConfig } from "../config";
 import { getCourses } from "../lib/api";
+import { fetchSiteConfig, CONTENT_UPDATED_EVENT, type SiteConfigType } from "../lib/content";
 import { readJSON, writeJSON } from "../lib/storage";
 import type { Course, Currency } from "../types";
 
 interface StoreValue {
   courses: Course[];
+  config: SiteConfigType;
   loading: boolean;
   cartIds: string[];
   cartCourses: Course[];
@@ -20,6 +22,7 @@ interface StoreValue {
   quickViewId: string | null;
   openQuickView: (id: string) => void;
   closeQuickView: () => void;
+  refreshContent: () => Promise<void>;
 }
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -29,29 +32,42 @@ const CURRENCY_KEY = "cp.currency";
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [config, setConfig] = useState<SiteConfigType>(defaultSiteConfig);
   const [loading, setLoading] = useState(true);
   const [cartIds, setCartIds] = useState<string[]>(() => readJSON<string[]>(CART_KEY, []));
   const [currencyCode, setCurrencyCodeState] = useState<string>(() =>
-    readJSON<string>(CURRENCY_KEY, siteConfig.currencies[0].code),
+    readJSON<string>(CURRENCY_KEY, defaultSiteConfig.currencies[0].code),
   );
   const [cartOpen, setCartOpen] = useState(false);
   const [quickViewId, setQuickViewId] = useState<string | null>(null);
 
-  useEffect(() => {
-    let alive = true;
-    getCourses()
-      .then((data) => {
-        if (!alive) return;
-        setCourses(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (alive) setLoading(false);
-      });
-    return () => {
-      alive = false;
-    };
+  const loadData = useCallback(async () => {
+    try {
+      const [fetchedCourses, fetchedConfig] = await Promise.all([
+        getCourses(),
+        fetchSiteConfig()
+      ]);
+      setCourses(fetchedCourses);
+      setConfig(fetchedConfig);
+    } catch (e) {
+      console.error("Error loading store data:", e);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    void loadData();
+
+    const handleContentUpdate = () => {
+      void loadData();
+    };
+
+    window.addEventListener(CONTENT_UPDATED_EVENT, handleContentUpdate);
+    return () => {
+      window.removeEventListener(CONTENT_UPDATED_EVENT, handleContentUpdate);
+    };
+  }, [loadData]);
 
   // إزالة أي كورس محفوظ في السلة لم يعد موجوداً
   useEffect(() => {
@@ -66,7 +82,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     writeJSON(CART_KEY, cartIds);
   }, [cartIds]);
 
-  const currency = siteConfig.currencies.find((c) => c.code === currencyCode) ?? siteConfig.currencies[0];
+  const currency = config.currencies.find((c) => c.code === currencyCode) ?? config.currencies[0];
 
   const setCurrencyCode = useCallback((code: string) => {
     setCurrencyCodeState(code);
@@ -90,6 +106,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<StoreValue>(
     () => ({
       courses,
+      config,
       loading,
       cartIds,
       cartCourses: cartIds.map((id) => courses.find((c) => c.id === id)).filter((c): c is Course => Boolean(c)),
@@ -104,9 +121,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       quickViewId,
       openQuickView,
       closeQuickView,
+      refreshContent: loadData,
     }),
     [
       courses,
+      config,
       loading,
       cartIds,
       addToCart,
@@ -118,6 +137,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       quickViewId,
       openQuickView,
       closeQuickView,
+      loadData,
     ],
   );
 
@@ -126,6 +146,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
 export function useStore(): StoreValue {
   const ctx = useContext(StoreContext);
-  if (!ctx) throw new Error("useStore must be used inside <StoreProvider>");
+  if (!ctx) throw new Error("useStore must be used within StoreProvider");
   return ctx;
 }
